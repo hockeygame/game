@@ -1,7 +1,11 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <canvas id="game_window" width="600" height="600"></canvas>
+  <div class="sprites">
+            <img src="../assets/test_ball.png" width="24" id="ball" >
+            <img src="../assets/test_paddle.png" width="80"  id="paddle">
+    </div>
+
   </div>
 </template>
 
@@ -15,4 +19,6 @@ export default {
     HelloWorld
   }
 }
+
+
 </script>
