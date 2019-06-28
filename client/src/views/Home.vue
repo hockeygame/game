@@ -1,11 +1,7 @@
 <template>
   <div class="home">
     <canvas id="game_window" width="600" height="600"></canvas>
-    <div class="sprites">
-      <img src="../assets/test_ball.png" width="24" id="ball">
-      <img src="../assets/test_paddle.png" width="80" id="paddle">
-      <img src="../assets/test_paddle.png" width="80" id="paddle2">
-    </div>
+    
   </div>
 </template>
 
@@ -22,30 +18,36 @@ export default {
   data() {
     return {
       playerNumber: "",
-      dataPlayers:{
-       
-      },
-      
+      dataPlayers: {},
+      name: "",
+      playerId: "",
+      ballX: 300,
+      ballY: 570
     };
   },
   created() {
+    this.name = localStorage.getItem("name");
+    this.playerId = localStorage.getItem("playerId");
     db.collection("rooms")
       .doc(this.$route.params.id)
       .onSnapshot(doc => {
         let data = doc.data();
-        if (data.players.player1.playerId === "jo") {
+        if(data)
+        // this.ballX = data.ballX;
+        // this.ballY = data.ballY;
+        if (data.players.player1.playerId === this.playerId) {
           this.playerNumber = "player1";
-        } else if (data.players.player2.playerId === "jo") {
+        } else if (data.players.player2.playerId === this.playerId) {
           this.playerNumber = "player2";
-        } else if (data.players.player3.playerId === "jo") {
+        } else if (data.players.player3.playerId === this.playerId) {
           this.playerNumber = "player3";
-        } else if (data.players.player4.playerId === "jo") {
+        } else if (data.players.player4.playerId === this.playerId) {
           this.playerNumber = "player4";
         }
         // console.log(this.playerNumber)
         console.log(doc, "doc");
         console.log(doc.data(), "doc");
-        this.dataPlayers = doc.data().players
+        this.dataPlayers = doc.data().players;
         // let data = doc.data();
         // this.tempData = data;
         // this.rivals = Object.values(data.players);
@@ -63,8 +65,6 @@ export default {
     let ctx = canvas.getContext("2d");
 
     var ballRadius = 10;
-    var x = canvas.width / 2;
-    var y = canvas.height - 30;
     var dx = 2;
     var dy = -2;
 
@@ -79,15 +79,6 @@ export default {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
 
-    // function keyDownHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = true;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = true;
-    //     }
-    // }
-
     function keyDownHandler(e) {
       if (e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
@@ -99,15 +90,6 @@ export default {
         downPressed = true;
       }
     }
-
-    // function keyUpHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = false;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = false;
-    //     }
-    // }
 
     function keyUpHandler(e) {
       if (e.key == "Right" || e.key == "ArrowRight") {
@@ -121,8 +103,7 @@ export default {
       }
     }
 
-    const drawPaddle = () =>{
-      
+    const drawPaddle = () => {
       ctx.beginPath();
       ctx.rect(
         this.dataPlayers.player1.x,
@@ -133,41 +114,23 @@ export default {
       ctx.fillStyle = "#0095DD";
       ctx.fill();
       ctx.closePath();
-    }
+    };
 
     // Second Paddle
     var paddleX2 = (canvas.width - paddleWidthH) / 2;
-    // var rightPressed = false;
-    // var leftPressed = false;
 
-    // document.addEventListener("keydown", keyDownHandler, false);
-    // document.addEventListener("keyup", keyUpHandler, false);
-
-    // function keyDownHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = true;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = true;
-    //     }
-    // }
-
-    // function keyUpHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = false;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = false;
-    //     }
-    // }
-
-    const drawPaddle2 = ()=> {
+    const drawPaddle2 = () => {
       ctx.beginPath();
-      ctx.rect(this.dataPlayers.player2.x, this.dataPlayers.player2.y, paddleWidthH, paddleHeightH);
+      ctx.rect(
+        this.dataPlayers.player2.x,
+        this.dataPlayers.player2.y,
+        paddleWidthH,
+        paddleHeightH
+      );
       ctx.fillStyle = "#00ff00";
       ctx.fill();
       ctx.closePath();
-    }
+    };
 
     ///////////////////////////////////////////////
     // Paddle 3 & 4
@@ -179,60 +142,21 @@ export default {
     var upPressed = false;
     var downPressed = false;
 
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
-
-    // function keyDownHandler(e) {
-    //     if(e.key == "Up" || e.key == "ArrowUp") {
-    //         upPressed = true;
-    //     }
-    //     else if(e.key == "Down" || e.key == "ArrowDown") {
-    //         downPressed = true;
-    //     }
-    // }
-
-    // function keyUpHandler(e) {
-    //     if(e.key == "Up" || e.key == "ArrowUp") {
-    //         upPressed = false;
-    //     }
-    //     else if(e.key == "Down" || e.key == "ArrowDown") {
-    //         downPressed = false;
-    //     }
-    // }
-
-    const drawPaddle3 = ()=> {
+    const drawPaddle3 = () => {
       ctx.beginPath();
-      ctx.rect(this.dataPlayers.player3.x, this.dataPlayers.player3.y, paddleWidthV, paddleHeightV);
+      ctx.rect(
+        this.dataPlayers.player3.x,
+        this.dataPlayers.player3.y,
+        paddleWidthV,
+        paddleHeightV
+      );
       ctx.fillStyle = "#ff0000";
       ctx.fill();
       ctx.closePath();
-    }
+    };
 
     // Fourth paddle
     var paddleY4 = (canvas.height - paddleHeightV) / 2;
-    // var rightPressed = false;
-    // var leftPressed = false;
-
-    // document.addEventListener("keydown", keyDownHandler, false);
-    // document.addEventListener("keyup", keyUpHandler, false);
-
-    // function keyDownHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = true;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = true;
-    //     }
-    // }
-
-    // function keyUpHandler(e) {
-    //     if(e.key == "Right" || e.key == "ArrowRight") {
-    //         rightPressed = false;
-    //     }
-    //     else if(e.key == "Left" || e.key == "ArrowLeft") {
-    //         leftPressed = false;
-    //     }
-    // }
 
     const drawPaddle4 = () => {
       ctx.beginPath();
@@ -245,59 +169,157 @@ export default {
       ctx.fillStyle = "#ffff00";
       ctx.fill();
       ctx.closePath();
-    }
-
+    };
+    const speed_adjust = (c, paddle_c) => {
+      if (c <= paddle_c + 4) {
+        return -3;
+      }
+      if (c > paddle_c + 4 && c <= paddle_c + 16) {
+        return -2;
+      }
+      if (c > paddle_c + 16 && c <= paddle_c + 32) {
+        return -1;
+      }
+      if (c > paddle_c + 32 && c <= paddle_c + 48) {
+        return 0;
+      }
+      if (c > paddle_c + 48 && c <= paddle_c + 64) {
+        return 1;
+      }
+      if (c > paddle_c + 64 && c <= paddle_c + 76) {
+        return 2;
+      }
+      if (c > paddle_c + 76) {
+        return 3;
+      }
+    };
     /////////////////////////////////////////////////////////
 
-    function drawBall() {
+    const drawBall = () => {
       ctx.beginPath();
-      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.arc(this.ballX, this.ballY, ballRadius, 0, Math.PI * 2);
       ctx.fillStyle = "#0095DD";
       ctx.fill();
       ctx.closePath();
-    }
+    };
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawBall();
-      drawPaddle();
-      drawPaddle2();
-      drawPaddle3();
-      drawPaddle4();
+      if (this.dataPlayers.player1.alive) {
+        drawPaddle();
+      }
+      if (this.dataPlayers.player2.alive) {
+        drawPaddle2();
+      }
+      if (this.dataPlayers.player3.alive) {
+        drawPaddle3();
+      }
+      if (this.dataPlayers.player4.alive) {
+        drawPaddle4();
+      }
 
-      if (x + dx < ballRadius) {
-        if (y > paddleY3 && y < paddleY3 + paddleHeightV) {
+      if (this.ballX + dx < ballRadius) {
+        if (
+          !this.dataPlayers.player3.alive ||
+          (this.ballY > this.dataPlayers.player3.y &&
+            this.ballY < this.dataPlayers.player3.y + paddleHeightV)
+        ) {
           dx = -dx;
+          if (this.dataPlayers.player3.alive) {
+            let ddy = speed_adjust(this.ballY, this.dataPlayers.player3.y);
+            dy += ddy;
+          }
         } else {
-          alert("GAME OVER from Paddle 3");
-          document.location.reload();
-          clearInterval(interval); // Needed for Chrome to end game
+          console.log("GAME OVER for Paddle 3");
+          this.dataPlayers.player3.alive = false;
+          if (this.playerNumber === "player3") {
+            db.collection("rooms")
+              .doc(this.$route.params.id)
+              .update({
+                ["players." + this.playerNumber]: this.dataPlayers[
+                  this.playerNumber
+                ]
+              });
+          }
+          // paddleY3_status = false;
         }
       }
-      if (x + dx > canvas.width - ballRadius) {
-        if (y > paddleY4 && y < paddleY4 + paddleHeightV) {
+      if (this.ballX + dx > canvas.width - ballRadius) {
+        if (
+          !this.dataPlayers.player4.alive ||
+          (this.ballY > this.dataPlayers.player4.y &&
+            this.ballY < this.dataPlayers.player4.y + paddleHeightV)
+        ) {
           dx = -dx;
+          if (this.dataPlayers.player4.alive) {
+            let ddy = speed_adjust(this.ballY, this.dataPlayers.player4.y);
+            dy += ddy;
+          }
         } else {
-          alert("GAME OVER from Paddle 4");
-          document.location.reload();
-          clearInterval(interval); // Needed for Chrome to end game
+          console.log("GAME OVER for Paddle 4");
+          this.dataPlayers.player4.alive = false;
+          if (this.playerNumber === "player4") {
+            db.collection("rooms")
+              .doc(this.$route.params.id)
+              .update({
+                ["players." + this.playerNumber]: this.dataPlayers[
+                  this.playerNumber
+                ]
+              });
+          }
+          // paddleY4_status = false;
         }
       }
-      if (y + dy < ballRadius) {
-        if (x > paddleX2 && x < paddleX2 + paddleWidthH) {
+      if (this.ballY + dy < ballRadius) {
+        if (
+          !this.dataPlayers.player2.alive ||
+          (this.ballX > this.dataPlayers.player2.x &&
+            this.ballX < this.dataPlayers.player2.x + paddleWidthH)
+        ) {
           dy = -dy;
+          if (this.dataPlayers.player2.alive) {
+            let ddx = speed_adjust(this.ballX, this.dataPlayers.player2.x);
+            dx += ddx;
+          }
         } else {
-          alert("GAME OVER from Paddle 2");
-          document.location.reload();
-          clearInterval(interval); // Needed for Chrome to end game
+          console.log("GAME OVER for Paddle 2");
+          this.dataPlayers.player2.alive = false;
+          if (this.playerNumber === "player2") {
+            db.collection("rooms")
+              .doc(this.$route.params.id)
+              .update({
+                ["players." + this.playerNumber]: this.dataPlayers[
+                  this.playerNumber
+                ]
+              });
+          }
+          // paddleX2_status = false;
         }
-      } else if (y + dy > canvas.height - ballRadius) {
-        if (x > paddleX1 && x < paddleX1 + paddleWidthH) {
+      } else if (this.ballY + dy > canvas.height - ballRadius) {
+        if (
+          !this.dataPlayers.player1.alive ||
+          (this.ballX > this.dataPlayers.player1.x &&
+            this.ballX < this.dataPlayers.player1.x + paddleWidthH)
+        ) {
           dy = -dy;
+          if (this.dataPlayers.player1.alive) {
+            let ddx = speed_adjust(this.ballX, this.dataPlayers.player1.x);
+            dx += ddx;
+          }
         } else {
-          alert("GAME OVER from Paddle 1");
-          document.location.reload();
-          clearInterval(interval); // Needed for Chrome to end game
+          console.log("GAME OVER for Paddle 1");
+          this.dataPlayers.player1.alive = false;
+          if (this.playerNumber === "player1") {
+            db.collection("rooms")
+              .doc(this.$route.params.id)
+              .update({
+                ["players." + this.playerNumber]: this.dataPlayers[
+                  this.playerNumber
+                ]
+              });
+          }
+          // paddleX1_status = false;
         }
       }
 
@@ -306,19 +328,27 @@ export default {
         paddleX1 < canvas.width - paddleWidthH &&
         this.playerNumber === "player1"
       ) {
-        this.dataPlayers[this.playerNumber].x += 7
+        this.dataPlayers[this.playerNumber].x += 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       } else if (
         leftPressed &&
         paddleX1 > 0 &&
         this.playerNumber === "player1"
       ) {
-        this.dataPlayers[this.playerNumber].x -= 7
+        this.dataPlayers[this.playerNumber].x -= 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       }
 
       if (
@@ -326,19 +356,27 @@ export default {
         paddleX2 < canvas.width - paddleWidthH &&
         this.playerNumber === "player2"
       ) {
-        this.dataPlayers[this.playerNumber].x += 7
+        this.dataPlayers[this.playerNumber].x += 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       } else if (
         leftPressed &&
         paddleX2 > 0 &&
         this.playerNumber === "player2"
       ) {
-        this.dataPlayers[this.playerNumber].x -= 7
+        this.dataPlayers[this.playerNumber].x -= 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       }
 
       if (
@@ -346,149 +384,72 @@ export default {
         paddleY3 < canvas.height - paddleHeightV &&
         this.playerNumber === "player3"
       ) {
-        this.dataPlayers[this.playerNumber].y -= 7
+        this.dataPlayers[this.playerNumber].y -= 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })      } else if (
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
+      } else if (
         downPressed &&
         paddleY3 > 0 &&
         this.playerNumber === "player3"
       ) {
-        this.dataPlayers[this.playerNumber].y += 7
+        this.dataPlayers[this.playerNumber].y += 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       }
       if (
         upPressed &&
         paddleY4 < canvas.height - paddleHeightV &&
         this.playerNumber === "player4"
       ) {
-        this.dataPlayers[this.playerNumber].y -= 7
+        this.dataPlayers[this.playerNumber].y -= 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })      
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       } else if (
         downPressed &&
         paddleY4 > 0 &&
         this.playerNumber === "player4"
       ) {
-        this.dataPlayers[this.playerNumber].y += 7
+        this.dataPlayers[this.playerNumber].y += 7;
         db.collection("rooms")
           .doc(this.$route.params.id)
-          .update({ ["players." + this.playerNumber]: this.dataPlayers[this.playerNumber] })
+          .update({
+            ["players." + this.playerNumber]: this.dataPlayers[
+              this.playerNumber
+            ]
+          });
       }
 
-      x += dx;
-      y += dy;
+        this.ballX += dx;
+        this.ballY += dy;
+        // db.collection("rooms")
+        //   .doc(this.$route.params.id)
+        //   .update({
+        //     ballX: this.ballX
+        //   });
+        // db.collection("rooms")
+        //   .doc(this.$route.params.id)
+        //   .update({
+        //     ballY: this.ballY
+        //   });
+      
     };
 
     var interval = setInterval(draw, 10);
-
-    // let paddle_sprite = document.getElementById("paddle");
-    // let ball_sprite = document.getElementById("ball");
-
-    // let x = canvas.width/2;
-    // let y = canvas.height-48;
-    // let dx = 0;
-    // let dy = 0;
-    // let ball_rad = 12;
-
-    // let paddle_width = 80;
-    // let paddle_height = 19;
-    // let paddle_x = (canvas.width-paddle_width) / 2;
-    // let rightPressed = false;
-    // let leftPressed = false;
-    // function draw_ball() {
-    //     ctx.drawImage(ball_sprite, x - ball_rad, y - ball_rad);
-    // }
-    // function draw_paddle() {
-    //     ctx.drawImage(paddle_sprite, paddle_x, canvas.height-paddle_height);
-    // }
-    // function win_screen() {
-    //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //     dx = 0;
-    //     dy = 0;
-    //     draw_ball();
-    //     draw_paddle();
-    //     ctx.font = '36px Roboto Mono, monospace';
-    //     ctx.fillStyle = "#FFFFFF";
-    //     ctx.fillText("You Win!", 218, canvas.height / 2 - 10);
-    // }
-    // document.addEventListener("keydown", keyDownHandler, false);
-    // document.addEventListener("keyup", keyUpHandler, false);
-
-    // function keyDownHandler(e) {
-    //     if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true;
-    //     else if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true;
-    // }
-
-    // function keyUpHandler(e) {
-    //     if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false;
-    //     else if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false;
-    // }
-    // function dx_adjust() {
-    //     if(x <= paddle_x + 4){
-    //         return -3
-    //     }
-    //     if(x > paddle_x + 4 && x <= paddle_x + 16){
-    //         return -2
-    //     }
-    //     if(x > paddle_x + 16 && x <= paddle_x + 32){
-    //         return -1
-    //     }
-    //     if(x > paddle_x + 32 && x <= paddle_x + 48){
-    //         return 0
-    //     }
-    //     if(x > paddle_x + 48 && x <= paddle_x + 64){
-    //         return 1
-    //     }
-    //     if(x > paddle_x + 64 && x <= paddle_x + 76){
-    //         return 2
-    //     }
-    //     if(x > paddle_x + 76){
-    //         return 3
-    //     }
-    // }
-    // function render() {
-    //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //   // if(score === brick_row_count * brick_col_count * 2){
-    //   //     win_screen();
-    //   // }
-
-    //   // draw_bricks();
-    //   // detect_collision();
-    //   draw_ball();
-    //   x += dx;
-    //   y += dy;
-    //   if(x + dx > canvas.width - ball_rad || x + dx < ball_rad) {
-    //       dx = -dx;
-    //   }
-    //   if(y + dy < ball_rad) {
-    //       dy = -dy;
-    //   }
-    //   if(y + dy > canvas.height - ball_rad - paddle_height + 6 && x > paddle_x - 3 && x < paddle_x + paddle_width + 3) {
-    //       dy = -dy;
-    //       let ddx = dx_adjust()
-    //       dx += ddx;
-    //   }
-    //   // else if(y + dy > canvas.height - ball_rad + 6){
-    //   //     gameover_screen();
-    //   //     clearInterval(run_game);
-    //   // }
-
-    //   draw_paddle();
-    //   if(leftPressed && paddle_x > -4) {
-    //       paddle_x -= 6;
-    //   }
-    //   else if(rightPressed && paddle_x < (canvas.width - paddle_width + 4)) {
-    //       paddle_x += 6;
-    //   }
-    //   var run_game = setInterval(render, 10);
-
-    // }
-
-    render();
   }
 };
 </script>
