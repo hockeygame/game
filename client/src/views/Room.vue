@@ -8,7 +8,7 @@
         >
       </div>
     </div>
-    <div v-if="available">
+    <div >
       <input placeholder="Room Name" v-model="roomName" class="my-4 mx-3">
       <b-button @click="createRoom">create Room</b-button>
     </div>
@@ -23,8 +23,9 @@
 </template>
 
 <script>
-import db from "../../firebase.js";
+import db from "@/firebase.js";
 import Room from "@/components/RoomCard.vue";
+import song from "@/assets/background.mp3"
 export default {
   name: "RoomPage",
   data() {
@@ -34,7 +35,7 @@ export default {
       playerName: "",
       available: true,
       roomName: "",
-      playerThis: ''
+      playerThis: '',
     };
   },
   components: { Room },
@@ -60,6 +61,10 @@ export default {
     }
   },
   created() {
+    // this.bgsong.play()
+    let audio = new Audio(song)
+    console.log(audio)
+    audio.play()
     if(!localStorage.getItem('playerId')){
       this.$router.push(`/`)
     }
@@ -68,15 +73,30 @@ export default {
       querySnapshot.forEach(doc => {
         let data = doc.data();
         data.id = doc.id;
-        if (Object.keys(data.players).includes(this.playerId)) {
-          this.available = false;
-        } else {
-          this.available = true;
-        }
-        if (data.status === "playing") {
-          if (Object.keys(data.players).includes(this.playerThis)) {
-            this.$router.push(`/games/${data.id}`);
+
+        if (data.players[this.playerThis]) {
+            if(data.players[this.playerThis].playerId === this.playerId){
+              this.available = false;
+            }else{
+              this.available = true
+            }
           }
+          
+        // if (Object.keys(data.players).includes(this.playerId)) {
+        //   this.available = false;
+        // } else {
+        //   this.available = true;
+        // }
+        console.log(this.playerThis, '<<<<<<<')
+        if (data.status === "playing") {
+          for(let i = 0 ; i < Object.keys(data.players).length; i++){
+            if(data.players[Object.keys(data.players)[i]].playerId === this.playerId){
+              this.$router.push(`/games/${data.id}`);
+
+            }
+          }
+          console.log(data.players[this.playerThis], 'playing')
+          
         }
         console.log(data);
         this.rooms.push(data);

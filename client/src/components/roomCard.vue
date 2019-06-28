@@ -3,20 +3,20 @@
         <b-card v-if="Object.keys(room.players).includes(playerThis)" :title='room.title' :sub-title="room.status" style="background-color:#ADFF2F">
             {{playerNumbers}}
             <b-card-text v-for='(player,index) in players' :key="index">
-                player{{index+1}}: {{player}}, <b v-if="player === room.creator">(admin)</b>
+                player{{index+1}}: {{room.players[player].name}}, <b v-if="player === room.creator">(admin)</b>
             </b-card-text>
-            <b-button v-if="isAdmin" class='mx-1' @click="start">Start</b-button>
+            <b-button v-if="room.creator === playerId && room.status === 'ready'" class='mx-1' @click="start">Start</b-button>
             <b-button v-if='available' class='mx-1' @click="join">Join</b-button>
             <b-button class='mx-1'  @click="leave">Leave</b-button>
         </b-card>
         <b-card v-else :title='room.title' :sub-title="room.status">
             {{playerNumbers}}
             <b-card-text v-for='(player,index) in players' :key="index">
-                player{{index+1}}: {{player}} <b v-if="player === room.creator">(admin)</b>
+                player{{index+1}}:  {{room.players[player].name}} <b v-if="player === room.creator">(admin)</b>
             </b-card-text>
-            <b-button v-if="isAdmin" class='mx-1' @click="start">Start</b-button>
+            <b-button v-if="room.creator === playerId && room.status === 'ready'" class='mx-1' @click="start">Start</b-button>
             <b-button v-if='available' class='mx-1' @click="join">Join</b-button>
-            <b-button class='mx-1' v-if="Object.keys(room.players).includes(playerThis)" @click="leave">Leave</b-button>
+            <b-button class='mx-1' @click="leave">Leave</b-button>
         </b-card>
     </div>
 </template>
@@ -26,7 +26,7 @@
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-import db from '../../firebase.js'
+import db from '@/firebase.js'
 export default{
     name:'roomCard',
     props:['room', 'available'],
@@ -51,6 +51,7 @@ export default{
             }
         },
         join(){
+            console.log(this.available)
             if(Object.keys(this.room.players).length <4){
                 let players = this.room.players
                 
@@ -74,6 +75,7 @@ export default{
                         return 262.5
                     }
                 }
+                localStorage.setItem('playerThis', this.playerThis)
                 players['player' + String(count+1) ] = {
                     playerId: this.playerId,
                     name: this.playerName,
@@ -136,6 +138,7 @@ export default{
         
     },
     created(){
+        console.log(this.available)
         this.playerId = localStorage.getItem('playerId')
         this.playerName = localStorage.getItem('name')
         console.log(this.playerId)

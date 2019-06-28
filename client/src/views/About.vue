@@ -18,7 +18,7 @@
 
 <script>
 import { db } from "@/main.js";
-import Room from "@/components/roomCard.vue";
+import Room from "@/components/RoomCard.vue";
 
 export default {
   name: "RoomPage",

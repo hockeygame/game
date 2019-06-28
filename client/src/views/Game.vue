@@ -9,6 +9,8 @@
 // @ is an alias to /src
 import HelloWorld from "@/components/HelloWorld.vue";
 import db from "@/firebase";
+import audio from '@/assets/bounce.wav'
+let bounce = new Audio(audio)
 
 export default {
   name: "home",
@@ -220,6 +222,7 @@ export default {
       }
 
       if (this.ballX + dx < ballRadius) {
+        bounce.play()
         if (
           !this.dataPlayers.player3.alive ||
           (this.ballY > this.dataPlayers.player3.y &&
@@ -246,6 +249,7 @@ export default {
         }
       }
       if (this.ballX + dx > canvas.width - ballRadius) {
+        bounce.play()
         if (
           !this.dataPlayers.player4.alive ||
           (this.ballY > this.dataPlayers.player4.y &&
@@ -272,6 +276,7 @@ export default {
         }
       }
       if (this.ballY + dy < ballRadius) {
+        bounce.play()
         if (
           !this.dataPlayers.player2.alive ||
           (this.ballX > this.dataPlayers.player2.x &&
@@ -297,6 +302,7 @@ export default {
           // paddleX2_status = false;
         }
       } else if (this.ballY + dy > canvas.height - ballRadius) {
+        bounce.play()
         if (
           !this.dataPlayers.player1.alive ||
           (this.ballX > this.dataPlayers.player1.x &&
