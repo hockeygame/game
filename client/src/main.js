@@ -199,26 +199,26 @@ function drawPaddle4() {
     ctx.closePath();
 }
 
-function dx_adjust(paddle_x) {
-    if(x <= paddle_x + 4){
+function speed_adjust(c, paddle_c) {
+    if(c <= paddle_c + 4){
         return -3
     }
-    if(x > paddle_x + 4 && x <= paddle_x + 16){
+    if(c > paddle_c + 4 && c <= paddle_c + 16){
         return -2
     }
-    if(x > paddle_x + 16 && x <= paddle_x + 32){
+    if(c > paddle_c + 16 && c <= paddle_c + 32){
         return -1
     }
-    if(x > paddle_x + 32 && x <= paddle_x + 48){
+    if(c > paddle_c + 32 && c <= paddle_c + 48){
         return 0
     }
-    if(x > paddle_x + 48 && x <= paddle_x + 64){
+    if(c > paddle_c + 48 && c <= paddle_c + 64){
         return 1
     }
-    if(x > paddle_x + 64 && x <= paddle_x + 76){
+    if(c > paddle_c + 64 && c <= paddle_c + 76){
         return 2
     }
-    if(x > paddle_x + 76){
+    if(c > paddle_c + 76){
         return 3
     }
 }
@@ -252,6 +252,10 @@ function draw() {
     if(x + dx < ballRadius) {
         if(!paddleY3_status || (y > paddleY3 && y < paddleY3 + paddleHeightV)) {
             dx = -dx;
+            if(paddleY3_status){
+                let ddy = speed_adjust(y, paddleY3)
+                dy += ddy;
+            }
         }
         else {
             console.log("GAME OVER for Paddle 3");
@@ -261,31 +265,39 @@ function draw() {
     if(x + dx > canvas.width-ballRadius) {
         if(!paddleY4_status || (y > paddleY4 && y < paddleY4 + paddleHeightV)) {
             dx = -dx;
+            if(paddleY4_status){
+                let ddy = speed_adjust(y, paddleY4)
+                dy += ddy;
+            }
         }
         else {
-            console.log("GAME OVER from Paddle 4");
+            console.log("GAME OVER for Paddle 4");
             paddleY4_status = false
         }
     }
     if(y + dy < ballRadius) {
         if(!paddleX2_status || (x > paddleX2 && x < paddleX2 + paddleWidthH)) {
             dy = -dy;
-            let ddx = dx_adjust(paddleX2)
-            dx += ddx;
+            if(paddleX2_status){
+                let ddx = speed_adjust(x, paddleX2)
+                dx += ddx;
+            }
         }
         else {
-            console.log("GAME OVER from Paddle 2");
+            console.log("GAME OVER for Paddle 2");
             paddleX2_status = false
         }
     }
     else if(y + dy > canvas.height-ballRadius) {
         if(!paddleX1_status || (x > paddleX1 && x < paddleX1 + paddleWidthH)) {
             dy = -dy;
-            let ddx = dx_adjust(paddleX1)
-            dx += ddx;
+            if(paddleX1_status){
+                let ddx = speed_adjust(x, paddleX1)
+                dx += ddx;
+            }
         }
         else {
-            console.log("GAME OVER from Paddle 1");
+            console.log("GAME OVER for Paddle 1");
             paddleX1_status = false
         }
     }
