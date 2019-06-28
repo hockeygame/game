@@ -4,6 +4,8 @@
   <div class="sprites">
             <img src="../assets/test_ball.png" width="24" id="ball" >
             <img src="../assets/test_paddle.png" width="80"  id="paddle">
+            <img src="../assets/test_paddle.png" width="80"  id="paddle2">
+
     </div>
 
   </div>
