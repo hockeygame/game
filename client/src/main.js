@@ -26,6 +26,7 @@ var paddleHeightH = 10;
 var paddleWidthH = 75;
 
 var paddleX1 = (canvas.width-paddleWidthH)/2;
+var paddleX1_status = true
 var rightPressed = false;
 var leftPressed = false;
 
@@ -78,6 +79,7 @@ function keyUpHandler(e) {
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX1, canvas.height-paddleHeightH, paddleWidthH, paddleHeightH);
+    // console.log(`Paddle 1: x = ${paddleX1}, y = ${canvas.height-paddleHeightH}`)
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
@@ -86,6 +88,7 @@ function drawPaddle() {
 
 // Second Paddle
 var paddleX2 = (canvas.width-paddleWidthH)/2;
+var paddleX2_status = true
 // var rightPressed = false;
 // var leftPressed = false;
 
@@ -113,6 +116,7 @@ var paddleX2 = (canvas.width-paddleWidthH)/2;
 function drawPaddle2() {
     ctx.beginPath();
     ctx.rect(paddleX2, 0, paddleWidthH, paddleHeightH);
+    // console.log(`Paddle 2: x = ${paddleX2}, y = 0`)
     ctx.fillStyle = "#00ff00";
     ctx.fill();
     ctx.closePath();
@@ -125,6 +129,7 @@ var paddleWidthV = 10;
 
 // Third paddle
 var paddleY3 = (canvas.height-paddleHeightV)/2;
+var paddleY3_status = true
 var upPressed = false;
 var downPressed = false;
 
@@ -152,6 +157,7 @@ document.addEventListener("keyup", keyUpHandler, false);
 function drawPaddle3() {
     ctx.beginPath();
     ctx.rect(0, paddleY3, paddleWidthV, paddleHeightV);
+    // console.log(`Paddle 3: x = 0, y = ${paddleY3}`)
     ctx.fillStyle = "#ff0000";
     ctx.fill();
     ctx.closePath();
@@ -159,6 +165,7 @@ function drawPaddle3() {
 
 // Fourth paddle
 var paddleY4 = (canvas.height-paddleHeightV)/2;
+let paddleY4_status = true
 // var rightPressed = false;
 // var leftPressed = false;
 
@@ -186,6 +193,7 @@ var paddleY4 = (canvas.height-paddleHeightV)/2;
 function drawPaddle4() {
     ctx.beginPath();
     ctx.rect(canvas.width-paddleWidthV, paddleY4, paddleWidthV, paddleHeightV);
+    // console.log(`Paddle 4: x = ${canvas.width-paddleWidthV}, y = ${paddleY4}`)
     ctx.fillStyle = "#ffff00";
     ctx.fill();
     ctx.closePath();
@@ -204,49 +212,53 @@ function drawBall() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
-    drawPaddle();
-    drawPaddle2();
-    drawPaddle3();
-    drawPaddle4();
+    if(paddleX1_status){
+        drawPaddle();
+    }
+    if(paddleX2_status){
+        drawPaddle2();
+    }
+    if(paddleY3_status){
+        drawPaddle3();        
+    }
+    if(paddleY4_status){
+        drawPaddle4();
+    }
 
     if(x + dx < ballRadius) {
-        if(y > paddleY3 && y < paddleY3 + paddleHeightV) {
+        if(!paddleY3_status || (y > paddleY3 && y < paddleY3 + paddleHeightV)) {
             dx = -dx;
         }
         else {
-            alert("GAME OVER from Paddle 3");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+            console.log("GAME OVER for Paddle 3");
+            paddleY3_status = false
         }
     }
     if(x + dx > canvas.width-ballRadius) {
-        if(y > paddleY4 && y < paddleY4 + paddleHeightV) {
+        if(!paddleY4_status || (y > paddleY4 && y < paddleY4 + paddleHeightV)) {
             dx = -dx;
         }
         else {
-            alert("GAME OVER from Paddle 4");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+            console.log("GAME OVER from Paddle 4");
+            paddleY4_status = false
         }
     }
     if(y + dy < ballRadius) {
-        if(x > paddleX2 && x < paddleX2 + paddleWidthH) {
+        if(!paddleX2_status || (x > paddleX2 && x < paddleX2 + paddleWidthH)) {
             dy = -dy;
         }
         else {
-            alert("GAME OVER from Paddle 2");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+            console.log("GAME OVER from Paddle 2");
+            paddleX2_status = false
         }
     }
     else if(y + dy > canvas.height-ballRadius) {
-        if(x > paddleX1 && x < paddleX1 + paddleWidthH) {
+        if(!paddleX1_status || (x > paddleX1 && x < paddleX1 + paddleWidthH)) {
             dy = -dy;
         }
         else {
-            alert("GAME OVER from Paddle 1");
-            document.location.reload();
-            clearInterval(interval); // Needed for Chrome to end game
+            console.log("GAME OVER from Paddle 1");
+            paddleX1_status = false
         }
     }
     
