@@ -199,6 +199,30 @@ function drawPaddle4() {
     ctx.closePath();
 }
 
+function dx_adjust(paddle_x) {
+    if(x <= paddle_x + 4){
+        return -3
+    }
+    if(x > paddle_x + 4 && x <= paddle_x + 16){
+        return -2
+    }
+    if(x > paddle_x + 16 && x <= paddle_x + 32){
+        return -1
+    }
+    if(x > paddle_x + 32 && x <= paddle_x + 48){
+        return 0
+    }
+    if(x > paddle_x + 48 && x <= paddle_x + 64){
+        return 1
+    }
+    if(x > paddle_x + 64 && x <= paddle_x + 76){
+        return 2
+    }
+    if(x > paddle_x + 76){
+        return 3
+    }
+}
+
 /////////////////////////////////////////////////////////
 
 function drawBall() {
@@ -246,6 +270,8 @@ function draw() {
     if(y + dy < ballRadius) {
         if(!paddleX2_status || (x > paddleX2 && x < paddleX2 + paddleWidthH)) {
             dy = -dy;
+            let ddx = dx_adjust(paddleX2)
+            dx += ddx;
         }
         else {
             console.log("GAME OVER from Paddle 2");
@@ -255,6 +281,8 @@ function draw() {
     else if(y + dy > canvas.height-ballRadius) {
         if(!paddleX1_status || (x > paddleX1 && x < paddleX1 + paddleWidthH)) {
             dy = -dy;
+            let ddx = dx_adjust(paddleX1)
+            dx += ddx;
         }
         else {
             console.log("GAME OVER from Paddle 1");
@@ -274,15 +302,15 @@ function draw() {
         paddleX2 -= 7;
     }
 
-    if(upPressed && paddleY3 < canvas.height-paddleHeightV) {
+    if(upPressed && paddleY3 > 0) {
         paddleY3 -= 7;
-    } else if(downPressed && paddleY3 > 0) {
+    } else if(downPressed && paddleY3 < canvas.height-paddleHeightV) {
         paddleY3 += 7;
     }
     
-    if(upPressed && paddleY4 < canvas.height-paddleHeightV) {
+    if(upPressed && paddleY4 > 0) {
         paddleY4 -= 7;
-    } else if(downPressed && paddleY4 > 0) {
+    } else if(downPressed && paddleY4 < canvas.height-paddleHeightV) {
         paddleY4 += 7;
     }
 
@@ -395,4 +423,4 @@ var interval = setInterval(draw, 10);
 
 // }
 
-render()
+// render()
